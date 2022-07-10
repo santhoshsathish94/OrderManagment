@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderManagment.Application.Interfaces.Repositories;
 using OrderManagment.Repository.Implimentation;
-using OrderManagment.Repository.Interface;
 
 namespace OrderManagment.Repository
 {

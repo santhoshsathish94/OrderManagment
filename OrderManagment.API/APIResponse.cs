@@ -16,6 +16,34 @@ namespace OrderManagment.API
             };
         }
 
+        public static APIResponseModel Created(string msg = "Created Successfully", HttpStatusCode statusCode = HttpStatusCode.Created, string status = "ok")
+        {
+            return new APIResponseModel
+            {
+                Message = msg,
+                Status = status,
+                StatusCode = (int)statusCode,
+            };
+        }
+        public static APIResponseModel Updated(string msg = "Updated Successfully", HttpStatusCode statusCode = HttpStatusCode.OK, string status = "ok")
+        {
+            return new APIResponseModel
+            {
+                Message = msg,
+                Status = status,
+                StatusCode = (int)statusCode,
+            };
+        }
+        public static APIResponseModel Deleted(string msg = "Deleted Successfully", HttpStatusCode statusCode = HttpStatusCode.OK, string status = "ok")
+        {
+            return new APIResponseModel
+            {
+                Message = msg,
+                Status = status,
+                StatusCode = (int)statusCode,
+            };
+        }
+
         public static APIResponseModel Error(object errorMsg = null, HttpStatusCode statusCode = HttpStatusCode.InternalServerError, object data = null, string status = "error")
         {
             return new APIResponseModel

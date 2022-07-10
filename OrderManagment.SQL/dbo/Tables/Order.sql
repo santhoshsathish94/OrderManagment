@@ -7,6 +7,7 @@ create table "Order" (
    OrderNumber          nvarchar(10)         null,
    CustomerId           int                  not null,
    TotalAmount          decimal(12,2)        null default 0,
+   BillingId            int                  not null
    constraint PK_ORDER primary key (Id)
 )
 GO
@@ -14,6 +15,10 @@ alter table "Order"
    add constraint FK_ORDER_REFERENCE_CUSTOMER foreign key (CustomerId)
       references Customer (Id)
 GO
+alter table "Order"
+   add constraint FK_ORDER_REFERENCE_BILLING foreign key (BillingId)
+      references Billing (Id)
+Go
 /*==============================================================*/
 /* Index: IndexOrderCustomerId                                  */
 /*==============================================================*/
@@ -27,3 +32,12 @@ GO
 create index IndexOrderOrderDate on "Order" (
 OrderDate ASC
 )
+GO
+
+/*==============================================================*/
+/* Index: IndexOrderNumber                                      */
+/*==============================================================*/
+create index IndexOrderNumber on "Order" (
+OrderNumber ASC
+)
+Go

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using OrderManagment.API.Models;
-using OrderManagment.Service.Criteria;
-using OrderManagment.Service.Dto;
+using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.API.Mapper
 {
@@ -9,9 +8,7 @@ namespace OrderManagment.API.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<ProductModel, ProductDto>();
-            CreateMap<OrderModel, OrderDto>().IncludeAllDerived();
-            CreateMap<OrderItemModel, OrderItemDto>().IncludeAllDerived();
+            CreateMap<ProductModel, Product>();
         }
     }
 }

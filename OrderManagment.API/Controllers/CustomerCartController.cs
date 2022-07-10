@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagment.API.Models;
-using OrderManagment.Service.Criteria;
-using OrderManagment.Service.Dto;
-using OrderManagment.Service.Interfaces;
+using OrderManagment.Application.Interfaces.Services;
+using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.API.Controllers
 {
@@ -34,9 +33,9 @@ namespace OrderManagment.API.Controllers
 
         [HttpPost]
         [Route("CreateOrder")]
-        public async Task<IActionResult> CreateOrderAsync(OrderModel orderModel)
+        public async Task<IActionResult> CreateOrderAsync(int customerId)
         {
-            var status = await _orderService.CreateOrUpdateAsync(_mapper.Map<OrderDto>(orderModel));
+            var status = await _orderService.CreateOrderAsync(customerId);
             return Ok(status);
         }
 
@@ -44,7 +43,8 @@ namespace OrderManagment.API.Controllers
         [Route("AddItem")]
         public async Task<IActionResult> AddOrderItemAsync(OrderItemModel orderItem)
         {
-            var status = await _orderService.CreateOrUpdateAsync(_mapper.Map<OrderItemDto>(orderItem));
+            var model = _mapper.Map<OrderItem>(orderItem);
+            var status = await _orderService.CreateOrUpdateItemAsync(model);
             return Ok(status);
         }
 
@@ -52,7 +52,8 @@ namespace OrderManagment.API.Controllers
         [Route("UpdateItem")]
         public async Task<IActionResult> UpdateOrderItemAsync(OrderItemModel orderItem)
         {
-            var status = await _orderService.CreateOrUpdateAsync(_mapper.Map<OrderItemDto>(orderItem));
+            var model = _mapper.Map<OrderItem>(orderItem);
+            var status = await _orderService.CreateOrUpdateItemAsync(model);
             return Ok(status);
         }
 
@@ -60,7 +61,7 @@ namespace OrderManagment.API.Controllers
         [Route("RemoveItem")]
         public async Task<IActionResult> DeleteOrderItemAsync(int ItemId)
         {
-            var status = await _orderService.RemoveAsync(new int[] { ItemId });
+            var status = await _orderService.RemoveItemAsync(new int[] { ItemId });
             return Ok(status);
         }
 
@@ -68,15 +69,15 @@ namespace OrderManagment.API.Controllers
         [Route("RemoveItems")]
         public async Task<IActionResult> DeleteOrderItemsAsync(int[] ItemIds)
         {
-            var status = await _orderService.RemoveAsync(ItemIds);
+            var status = await _orderService.RemoveItemAsync(ItemIds);
             return Ok(status);
         }
 
         [HttpPost]
         [Route("CompleteOrder")]
-        public async Task<IActionResult> CompleteOrderAsync(OrderModel orderModel)
+        public async Task<IActionResult> CompleteOrderAsync(Order order)
         {
-            var status = await _orderService.CompleteOrderAsync(_mapper.Map<OrderDto>(orderModel));
+            var status = await _orderService.CompleteOrderAsync(order);
             return Ok(status);
         }
     }

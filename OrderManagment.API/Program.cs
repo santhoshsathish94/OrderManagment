@@ -1,5 +1,6 @@
 using AutoMapper;
 using OrderManagment.API.Mapper;
+using OrderManagment.API.Middleware;
 using OrderManagment.Repository;
 using OrderManagment.Services;
 using OrderManagment.Services.Mapper;
@@ -19,8 +20,8 @@ var config = new MapperConfiguration(config =>
 });
 var mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
+builder.Services.AddApplicationLayer(builder.Configuration);
 builder.Services.AddOrderManagmentRepository(builder.Configuration);
-builder.Services.AddOrderManagmentServices(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +30,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// add middleware to process exceptions automatically
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

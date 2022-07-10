@@ -1,9 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagment.API.Models;
-using OrderManagment.Service.Criteria;
-using OrderManagment.Service.Dto;
-using OrderManagment.Service.Interfaces;
+using OrderManagment.Application.Interfaces.Services;
+using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.API.Controllers
 {
@@ -28,6 +27,12 @@ namespace OrderManagment.API.Controllers
         public async Task<IActionResult> SearchByProductNameAsync(string productName)
         {
             var results = await _productService.SearchByProductNameAsync(productName);
+            if (results == null || results?.Count() == 0)
+            {
+                // exceptions are logged using a middleware
+                _logger.LogInformation($"Invalid search request {productName}");
+                return Ok(APIResponse.NoContent($"No Product of {productName} found"));
+            }
             return Ok(APIResponse.Success(results));
         }
 
@@ -35,24 +40,47 @@ namespace OrderManagment.API.Controllers
         [Route("AddProduct")]
         public async Task<IActionResult> AddAsync(ProductModel productModel)
         {
-            var status = await _productService.CreateOrUpdateAsync(_mapper.Map<ProductDto>(productModel));
-            return Ok(status);
+            var product = _mapper.Map<Product>(productModel);
+            var status = await _productService.CreateOrUpdateAsync(product);
+            if (status == false)
+            {
+                return Ok(APIResponse.Error("Failed to add product"));
+            }
+            return Ok(APIResponse.Created());
         }
 
         [HttpPut]
         [Route("UpdateProduct")]
-        public async Task<IActionResult> UpdateAsync(ProductModel productModel)
+        public async Task<IActionResult> UpdateAsync(int productId, ProductModel productModel)
         {
-            var status = await _productService.CreateOrUpdateAsync(_mapper.Map<ProductDto>(productModel));
-            return Ok(status);
+            if (productId > 0)
+            {
+                var product = _mapper.Map<Product>(productModel);
+                product.ProductId = productId;
+                var status = await _productService.CreateOrUpdateAsync(product);
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to update product"));
+                }
+                return Ok(APIResponse.Updated());
+            }
+            return BadRequest(APIResponse.Error($"Invalid productId: {productId}"));
         }
 
         [HttpDelete]
         [Route("RemoveProduct")]
         public async Task<IActionResult> RemoveAsync(int productId)
         {
-            var status = await _productService.RemoveAsync(new int[] { productId });
-            return Ok(status);
+            if (productId > 0)
+            {
+                var status = await _productService.RemoveAsync(new int[] { productId });
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to remove product"));
+                }
+                return Ok(APIResponse.Deleted());
+            }
+            return BadRequest(APIResponse.Error($"Invalid productId: {productId}"));
         }
     }
 }

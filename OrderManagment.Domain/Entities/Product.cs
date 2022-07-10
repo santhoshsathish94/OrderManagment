@@ -1,8 +1,8 @@
-﻿namespace OrderManagment.API.Models
+﻿namespace OrderManagment.Domain.Entities
 {
-    public class ProductModel
+    public class Product
     {
-        public int ProductId { get; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string? ProductDiscription { get; set; }
         public decimal Price { get; set; }
