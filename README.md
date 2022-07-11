@@ -1,5 +1,5 @@
 # OrderManagment
-This is clean core architecture implimented in .net 6 
+This is clean core architecture implimented in .net 6. 
 Application is only depended on domain and not on the UI or Infrastructure
 
 ###### Steps to setup
@@ -9,7 +9,6 @@ Application is only depended on domain and not on the UI or Infrastructure
 - Run or publish to interact with swagger
 
 ## Project Include
-- SQL database setup script
 - Product module
 - Order module
 - Dapper Repository
@@ -20,9 +19,10 @@ Application is only depended on domain and not on the UI or Infrastructure
 - Automapper
 - API models
 - Dapper query models
+- SQL database setup script
 
 ## Pending items
-> Customer module
-> Billing module
-> Unit tests
-> Integration tests
+> Customer module,
+> Billing module,
+> Unit tests,
+> Integration tests.
