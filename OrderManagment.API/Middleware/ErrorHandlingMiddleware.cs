@@ -1,4 +1,5 @@
 ﻿using OrderManagment.Application.Helpers;
+using OrderManagment.Domain.Exceptions;
 using System.Net;
 
 namespace OrderManagment.API.Middleware
@@ -32,7 +33,9 @@ namespace OrderManagment.API.Middleware
             _logger.LogError(exception.Message + ". Trace: " + exception.StackTrace);
             var code = StatusCodes.Status500InternalServerError; // 500 if unexpected
 
-            var result = APIResponse.Error(exception.Message).ToJsonString();
+            if (exception is NotFoundException) code = StatusCodes.Status404NotFound;
+
+            var result = APIResponse.Error(exception.Message, (HttpStatusCode)code).ToJsonString();
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = code;
             return context.Response.WriteAsync(result);

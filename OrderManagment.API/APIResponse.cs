@@ -5,42 +5,42 @@ namespace OrderManagment.API
 {
     public static class APIResponse
     {
-        public static APIResponseModel Success(object data, HttpStatusCode statusCode = HttpStatusCode.OK, string status = "ok")
+        public static APIResponseModel Success(object data, string status = "success")
         {
             return new APIResponseModel
             {
-                Message = statusCode.ToString(),
+                Message = HttpStatusCode.OK.ToString(),
                 Status = status,
-                StatusCode = (int)statusCode,
+                StatusCode = (int)HttpStatusCode.OK,
                 Result = data
             };
         }
 
-        public static APIResponseModel Created(string msg = "Created Successfully", HttpStatusCode statusCode = HttpStatusCode.Created, string status = "ok")
+        public static APIResponseModel Created(string message = "Created Successfully", string status = "created")
         {
             return new APIResponseModel
             {
-                Message = msg,
+                Message = message,
                 Status = status,
-                StatusCode = (int)statusCode,
+                StatusCode = (int)HttpStatusCode.Created,
             };
         }
-        public static APIResponseModel Updated(string msg = "Updated Successfully", HttpStatusCode statusCode = HttpStatusCode.OK, string status = "ok")
+        public static APIResponseModel Updated(string message = "Updated Successfully", string status = "updated")
         {
             return new APIResponseModel
             {
-                Message = msg,
+                Message = message,
                 Status = status,
-                StatusCode = (int)statusCode,
+                StatusCode = (int)HttpStatusCode.OK,
             };
         }
-        public static APIResponseModel Deleted(string msg = "Deleted Successfully", HttpStatusCode statusCode = HttpStatusCode.OK, string status = "ok")
+        public static APIResponseModel Deleted(string message = "Deleted Successfully", string status = "deleted")
         {
             return new APIResponseModel
             {
-                Message = msg,
+                Message = message,
                 Status = status,
-                StatusCode = (int)statusCode,
+                StatusCode = (int)HttpStatusCode.OK,
             };
         }
 

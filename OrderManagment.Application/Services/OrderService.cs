@@ -1,37 +1,46 @@
-﻿using OrderManagment.Application.Interfaces.Services;
+﻿using OrderManagment.Application.Interfaces.Repositories;
+using OrderManagment.Application.Interfaces.Services;
+using OrderManagment.Domain.Critierias;
 using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.Application.Services
 {
     public class OrderService : IOrderService
     {
-        public OrderService()
+        private readonly IOrderRepository _orderRepository;
+        public OrderService(IOrderRepository orderRepository)
         {
+            _orderRepository = orderRepository;
         }
 
-        public Task<bool> CompleteOrderAsync(Order order)
+        public async Task<bool> CompleteOrderAsync(int billingId)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.CompleteOrderAsync(billingId);
         }
 
-        public Task<bool> CreateOrderAsync(int customerId)
+        public async Task<bool> CreateOrderAsync(int customerId)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.CreateOrderAsync(customerId);
         }
 
-        public Task<bool> CreateOrUpdateItemAsync(OrderItem orderItem)
+        public async Task<bool> CreateOrUpdateItemAsync(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.AddOrUpdateItemAsync(orderItem);
         }
 
-        public Task<bool> RemoveItemAsync(int[] Ids)
+        public async Task<IEnumerable<Order>> GetOrdersAsync(SearchCriteria searchCriteria)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.GetOrdersAsync(searchCriteria);
         }
 
-        public Task<IEnumerable<Order>> SearchByOrderNumberAsync(string orderNumber)
+        public async Task<bool> RemoveItemAsync(int[] itemIds)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.DeleteItemsAsync(itemIds);
+        }
+
+        public async Task<IEnumerable<Order>> SearchByOrderNumberAsync(string orderNumber)
+        {
+            return await _orderRepository.SearchByOrderNumberAsync(orderNumber);
         }
     }
 }

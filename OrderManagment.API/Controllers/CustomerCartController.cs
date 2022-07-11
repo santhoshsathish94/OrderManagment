@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderManagment.API.Models;
 using OrderManagment.Application.Interfaces.Services;
+using OrderManagment.Domain.Critierias;
 using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.API.Controllers
@@ -24,61 +25,112 @@ namespace OrderManagment.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetOrders")]
+        public async Task<IActionResult> GetOrdersAsync([FromQuery] PageModel pageModel)
+        {
+            var searchCriteria = _mapper.Map<SearchCriteria>(pageModel);
+            var results = await _orderService.GetOrdersAsync(searchCriteria);
+            if (results == null || results?.Count() == 0)
+            {
+                // exceptions are logged using a middleware
+                _logger.LogInformation($"Invalid search request {searchCriteria.PageNumber}");
+                return Ok(APIResponse.NoContent($"No Orders found for pagenumber: {searchCriteria.PageNumber}"));
+            }
+            return Ok(APIResponse.Success(results));
+        }
+
+        [HttpGet]
         [Route("SearchByOrderNumber")]
         public async Task<IActionResult> SearchByOrderNumberAsync(string orderNumber)
         {
             var results = await _orderService.SearchByOrderNumberAsync(orderNumber);
-            return Ok(results);
+            if (results == null || results?.Count() == 0)
+            {
+                // exceptions are logged using a middleware
+                _logger.LogInformation($"Invalid search request {orderNumber}");
+                return Ok(APIResponse.NoContent($"No Order of {orderNumber} found"));
+            }
+            return Ok(APIResponse.Success(results));
         }
 
         [HttpPost]
         [Route("CreateOrder")]
         public async Task<IActionResult> CreateOrderAsync(int customerId)
         {
-            var status = await _orderService.CreateOrderAsync(customerId);
-            return Ok(status);
+            if (customerId > 0)
+            {
+                var status = await _orderService.CreateOrderAsync(customerId);
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to create order"));
+                }
+                return Ok(APIResponse.Created());
+            }
+            return BadRequest(APIResponse.Error($"Invalid customerId: {customerId}"));
+            
         }
 
         [HttpPost]
         [Route("AddItem")]
-        public async Task<IActionResult> AddOrderItemAsync(OrderItemModel orderItem)
+        public async Task<IActionResult> AddOrderItemAsync(OrderItemModel orderItemModel)
         {
-            var model = _mapper.Map<OrderItem>(orderItem);
-            var status = await _orderService.CreateOrUpdateItemAsync(model);
-            return Ok(status);
+            var orderItem = _mapper.Map<OrderItem>(orderItemModel);
+            var status = await _orderService.CreateOrUpdateItemAsync(orderItem);
+            if (status == false)
+            {
+                return Ok(APIResponse.Error("Failed to add orderItem"));
+            }
+            return Ok(APIResponse.Created());
         }
 
         [HttpPut]
         [Route("UpdateItem")]
-        public async Task<IActionResult> UpdateOrderItemAsync(OrderItemModel orderItem)
+        public async Task<IActionResult> UpdateOrderItemAsync(int orderItemId, OrderItemUpdateModel orderItemModel)
         {
-            var model = _mapper.Map<OrderItem>(orderItem);
-            var status = await _orderService.CreateOrUpdateItemAsync(model);
-            return Ok(status);
+            if (orderItemId > 0)
+            {
+                var orderItem = _mapper.Map<OrderItem>(orderItemModel);
+                orderItem.OrderItemId = orderItemId;
+                var status = await _orderService.CreateOrUpdateItemAsync(orderItem);
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to update orderitem"));
+                }
+                return Ok(APIResponse.Updated());
+            }
+            return BadRequest(APIResponse.Error($"Invalid orderItemId: {orderItemId}"));
         }
 
         [HttpDelete]
         [Route("RemoveItem")]
-        public async Task<IActionResult> DeleteOrderItemAsync(int ItemId)
+        public async Task<IActionResult> DeleteOrderItemAsync(int itemId)
         {
-            var status = await _orderService.RemoveItemAsync(new int[] { ItemId });
-            return Ok(status);
-        }
-
-        [HttpDelete]
-        [Route("RemoveItems")]
-        public async Task<IActionResult> DeleteOrderItemsAsync(int[] ItemIds)
-        {
-            var status = await _orderService.RemoveItemAsync(ItemIds);
-            return Ok(status);
-        }
+            if (itemId > 0)
+            {
+                var status = await _orderService.RemoveItemAsync(new int[] { itemId });
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to remove OrderItem"));
+                }
+                return Ok(APIResponse.Deleted());
+            }
+            return BadRequest(APIResponse.Error($"Invalid itemId: {itemId}"));
+        }     
 
         [HttpPost]
         [Route("CompleteOrder")]
-        public async Task<IActionResult> CompleteOrderAsync(Order order)
+        public async Task<IActionResult> CompleteOrderAsync(int billingId)
         {
-            var status = await _orderService.CompleteOrderAsync(order);
-            return Ok(status);
+            if (billingId > 0)
+            {
+                var status = await _orderService.CompleteOrderAsync(billingId);
+                if (status == false)
+                {
+                    return Ok(APIResponse.Error("Failed to complete order"));
+                }
+                return Ok(APIResponse.Created());
+            }
+            return BadRequest(APIResponse.Error($"Invalid billingId: {billingId}"));
         }
     }
 }

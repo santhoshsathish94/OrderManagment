@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagment.API.Models;
 using OrderManagment.Application.Interfaces.Services;
+using OrderManagment.Domain.Critierias;
 using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.API.Controllers
@@ -20,6 +21,21 @@ namespace OrderManagment.API.Controllers
             _logger = logger;
             _productService = productService;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("GetProducts")]
+        public async Task<IActionResult> GetProductsAsync([FromQuery] PageModel pageModel)
+        {
+            var searchCriteria = _mapper.Map<SearchCriteria>(pageModel);
+            var results = await _productService.GetProductsAsync(searchCriteria);
+            if (results == null || results?.Count() == 0)
+            {
+                // exceptions are logged using a middleware
+                _logger.LogInformation($"Invalid search request {searchCriteria.PageNumber}");
+                return Ok(APIResponse.NoContent($"No Product found for pagenumber: {searchCriteria.PageNumber}"));
+            }
+            return Ok(APIResponse.Success(results));
         }
 
         [HttpGet]

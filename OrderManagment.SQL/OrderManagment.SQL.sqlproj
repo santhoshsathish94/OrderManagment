@@ -69,6 +69,8 @@
     <Build Include="dbo\Tables\OrderItem.sql" />
     <Build Include="dbo\Tables\Product.sql" />
     <Build Include="dbo\Tables\Billing.sql" />
-    <None Include="Scripts\ScriptsLoadData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\LoadData.sql" />
   </ItemGroup>
 </Project>

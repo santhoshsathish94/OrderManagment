@@ -1,14 +1,19 @@
 ﻿using OrderManagment.Domain.Critierias;
 using OrderManagment.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OrderManagment.Application.Interfaces.Services
+namespace OrderManagment.Application.Interfaces.Repositories
 {
-    public interface IOrderService
+    public interface IOrderRepository
     {
+        Task<bool> AddOrUpdateItemAsync(OrderItem orderItem);
+        Task<bool> DeleteItemsAsync(int[] itemIds);
         Task<IEnumerable<Order>> SearchByOrderNumberAsync(string orderNumber);
         Task<bool> CreateOrderAsync(int customerId);
-        Task<bool> CreateOrUpdateItemAsync(OrderItem orderItem);
-        Task<bool> RemoveItemAsync(int[] Ids);
         Task<bool> CompleteOrderAsync(int billingId);
         Task<IEnumerable<Order>> GetOrdersAsync(SearchCriteria searchCriteria);
     }

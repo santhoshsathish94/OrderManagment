@@ -11,6 +11,7 @@ namespace OrderManagment.Repository
         {
             services.Configure<DatabaseOptions>(configuration.GetSection(DatabaseOptions.SectionName));
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
         }
     }
 }

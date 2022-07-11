@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Options;
 using OrderManagment.Application.Interfaces.Repositories;
+using OrderManagment.Domain.Critierias;
 using OrderManagment.Domain.Entities;
+using OrderManagment.Domain.Exceptions;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -68,7 +70,7 @@ namespace OrderManagment.Repository.Implimentation
             {
                 var existingProduct = await GetProductById(productId);
                 if (existingProduct == null)
-                    throw new ArgumentException($"Product Not found {productId}");
+                    throw new NotFoundException($"Product Not found {productId}");
                 var updateProduct = new Product
                 {
                     ProductId = existingProduct.ProductId,
@@ -106,6 +108,21 @@ namespace OrderManagment.Repository.Implimentation
                 throw new ArgumentNullException(nameof(productIds));
             status = await _orderDatabase.ExecuteAsync(sql, new { productIds });
             return status == 1;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsAsync(SearchCriteria searchCriteria)
+        {
+            const string sql = @"SELECT  
+	                                Id as ProductId,
+	                                ProductName,
+	                                ProductDiscription,
+	                                UnitPrice as Price,
+	                                Quantity 
+                                FROM Product 
+                                ORDER BY ProductName 
+                                OFFSET @OFFSet ROWS 
+                                FETCH NEXT @PageSize ROWS ONLY;";
+            return await _orderDatabase.QueryAsync<Product>(sql, searchCriteria);
         }
     }
 }

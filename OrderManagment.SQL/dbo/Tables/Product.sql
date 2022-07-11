@@ -7,6 +7,7 @@ create table Product (
    ProductDiscription   nvarchar(100)        null,
    UnitPrice            decimal(12,2)        null default 0,
    Quantity             int                  null default 0,
+   IsActive				bit					 default 1
    constraint PK_PRODUCT primary key (Id)
 )
 GO

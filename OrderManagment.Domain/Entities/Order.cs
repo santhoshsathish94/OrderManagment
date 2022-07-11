@@ -5,8 +5,9 @@
         public int OrderId { get; set; }
         public DateTime OrderDate { get; set; }
         public string OrderNumber { get; set; }
-        public virtual Billing Billing { get; set; }
-        public virtual Customer Customer { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int BillingId { get; set; }
+        public int CustomerId { get; set; }
         public IEnumerable<OrderItem> OrderItems { get; set; }
     }
 }

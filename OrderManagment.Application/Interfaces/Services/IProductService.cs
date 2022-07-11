@@ -1,4 +1,5 @@
-﻿using OrderManagment.Domain.Entities;
+﻿using OrderManagment.Domain.Critierias;
+using OrderManagment.Domain.Entities;
 
 namespace OrderManagment.Application.Interfaces.Services
 {
@@ -7,5 +8,6 @@ namespace OrderManagment.Application.Interfaces.Services
         Task<bool> CreateOrUpdateAsync(Product product);
         Task<bool> RemoveAsync(int[] Ids);
         Task<IEnumerable<Product>> SearchByProductNameAsync(string productName);
+        Task<IEnumerable<Product>> GetProductsAsync(SearchCriteria searchCriteria);
     }
 }

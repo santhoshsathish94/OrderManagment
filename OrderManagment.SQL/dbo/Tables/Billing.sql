@@ -7,6 +7,7 @@ create table Billing (
    BillingAddress       nvarchar(100)        null,
    DeliveryAddress      nvarchar(100)        null,
    BillingDate          datetime	         null,
+   BillingAmount        decimal(12,2)        null default 0,
    IsPaid               bit                  not null default 0,
    BillingNumber        nvarchar(30)         null,
    TranscantionId       nvarchar(30)         null,
