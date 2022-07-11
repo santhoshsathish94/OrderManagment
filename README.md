@@ -12,6 +12,7 @@ Application is only depended on domain and not on the UI or Infrastructure
 - Product module
 - Order module
 - Dapper Repository
+- Unit tests
 - Clean core architecture
 - swagger
 - docker
@@ -24,5 +25,4 @@ Application is only depended on domain and not on the UI or Infrastructure
 ## Pending items
 > Customer module,
 > Billing module,
-> Unit tests,
 > Integration tests.
